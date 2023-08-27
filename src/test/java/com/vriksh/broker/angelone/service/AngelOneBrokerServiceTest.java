@@ -188,9 +188,9 @@ public class AngelOneBrokerServiceTest extends AngelOneApiApplicationTests {
   public void shouldgetHistoricalCandleData() {
     List<CandleDataDto> candleData = angelOneBrokerService.getCandleData(
       CandleDataRequestDto.builder()
-        .exchange(Exchange.NFO)
-        .symbolToken("37179")
-        .interval(CandlePriceInterval.THREE_MINUTE)
+        .exchange(Exchange.NSE)
+        .symbolToken("26009")
+        .interval(CandlePriceInterval.FIVE_MINUTE)
         .fromDate(asDate(LocalDate.now().minusDays(5)))
         .toDate(asDate(LocalDate.now()))
         .build(),
@@ -214,22 +214,38 @@ public class AngelOneBrokerServiceTest extends AngelOneApiApplicationTests {
   @Test
   void shouldSubscribeToWSLTPData() throws InterruptedException {
 
-    WSConfig config = WSConfig.builder()
-      .user(AngelOneUser.builder()
-        .clientCode(clientCode)
-        .jwtToken(jwtToken)
-        .feedToken(feedToken)
-        .build())
+    AngelOneUser user = AngelOneUser.builder()
+      .clientCode(clientCode)
+      .jwtToken(jwtToken)
+      .feedToken(feedToken)
+      .build();
+    MockLtpListener listener = new MockLtpListener();
+    AngelOneWSClient client = new AngelOneWSClient(user, listener);
+
+    WSConfig config1 = WSConfig.builder()
+      .subscriptionType(SmartStreamSubsMode.LTP)
+      .token(new TokenID(ExchangeType.NSE_FO, "41683"))
+      .build();
+    client.subscribe(config1);
+    Thread.sleep(5000);
+    System.out.println(client.isConnectionOpen());
+
+    WSConfig config2 = WSConfig.builder()
       .subscriptionType(SmartStreamSubsMode.LTP)
       .token(new TokenID(ExchangeType.NSE_FO, "41737"))
-      .token(new TokenID(ExchangeType.NSE_FO, "41683"))
-      .listener(new MockLtpListener())
       .build();
-
-    AngelOneWSClient client = new AngelOneWSClient(config);
-    client.subscribe();
-
+    client.subscribe(config2);
     Thread.sleep(5000);
+    System.out.println(client.isConnectionOpen());
+
+    client.unsubscribe(config2);
+    Thread.sleep(5000);
+    System.out.println(client.isConnectionOpen());
+
+    client.subscribe(config2);
+    Thread.sleep(5000);
+    System.out.println(client.isConnectionOpen());
+
     client.disconnect();
   }
 
