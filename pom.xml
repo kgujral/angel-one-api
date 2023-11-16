@@ -15,7 +15,7 @@
 	<description>Angel One broker API implementation</description>
 	<properties>
 		<java.version>17</java.version>
-		<ss.json.transform.version>v0.1.17-SNAPSHOT</ss.json.transform.version>
+		<ss.json.transform.version>v0.1.17-8da292cdec-1</ss.json.transform.version>
 		<googleauth.version>1.5.0</googleauth.version>
 		<angelone.smart.api.version>2.1.0.01</angelone.smart.api.version>
 	</properties>
