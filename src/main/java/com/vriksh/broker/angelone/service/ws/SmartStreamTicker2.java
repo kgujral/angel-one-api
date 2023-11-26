@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.angelbroking.smartapi.Routes;
 import com.angelbroking.smartapi.http.exceptions.SmartAPIException;
+import com.angelbroking.smartapi.smartstream.models.Depth;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.LTP;
 import com.angelbroking.smartapi.smartstream.models.Quote;
@@ -47,6 +48,7 @@ public class SmartStreamTicker2 {
 
   private final Routes routes = new Routes();
   private final String wsuri = routes.getSmartStreamWSURI();
+
   private final SmartStreamListener smartStreamListener;
   private WebSocket ws;
   private final String clientId;
@@ -56,7 +58,7 @@ public class SmartStreamTicker2 {
   private LocalDateTime lastPongReceivedTime = LocalDateTime.now();
 
   /**
-   * Initializes the SmartStreamTicker.
+   * Initializes the SmartStreamTicker2.
    *
    * @param clientId            - the client ID used for authentication
    * @param feedToken           - the feed token used for authentication
@@ -143,6 +145,12 @@ public class SmartStreamTicker2 {
             smartStreamListener.onSnapQuoteArrival(snapQuote);
             break;
           }
+          case DEPTH_20: {
+            ByteBuffer packet = ByteBuffer.wrap(binary).order(ByteOrder.LITTLE_ENDIAN);
+            Depth depth = ByteUtils.mapToDepth20(packet);
+            smartStreamListener.onDepthArrival(depth);
+            break;
+          }
           default: {
             smartStreamListener.onError(getErrorHolder(
               new SmartAPIException("SubsMode=" + mode + " in the response is not handled.")));
@@ -196,6 +204,11 @@ public class SmartStreamTicker2 {
       public void onCloseFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         super.onCloseFrame(websocket, frame);
       }
+
+      @Override
+      public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
+        smartStreamListener.onErrorCustom();
+      }
     };
   }
 
@@ -247,7 +260,7 @@ public class SmartStreamTicker2 {
 
   /**
    * Returns true if websocket connection is open.
-   * 
+   *
    * @return boolean
    */
   public boolean isConnectionOpen() {
@@ -256,7 +269,7 @@ public class SmartStreamTicker2 {
 
   /**
    * Returns true if websocket connection is closed.
-   * 
+   *
    * @return boolean
    */
   public boolean isConnectionClosed() {
@@ -269,14 +282,34 @@ public class SmartStreamTicker2 {
   public void subscribe(SmartStreamSubsMode mode, Set<TokenID> tokens) {
     if (ws != null) {
       if (ws.isOpen()) {
+
         Set<TokenID> set = tokensByModeMap.get(mode);
         if (CollectionUtils.isEmpty(set)) {
           set = new HashSet<>();
         }
         set.addAll(tokens);
-        tokensByModeMap.put(mode, set);
-        JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
-        ws.sendText(wsMWJSONRequest.toString());
+
+        for (TokenID token : tokens) {
+          if (ExchangeType.NSE_CM.equals(token.getExchangeType()) && SmartStreamSubsMode.DEPTH_20.equals(mode)) {
+            if (tokens.size() < 50) {
+              JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
+              ws.sendText(wsMWJSONRequest.toString());
+              tokensByModeMap.put(mode, set);
+            } else {
+              smartStreamListener
+                .onError(getErrorHolder(new SmartAPIException("Token size should be less than 50", "504")));
+            }
+          } else {
+            if (!ExchangeType.NSE_CM.equals(token.getExchangeType()) && SmartStreamSubsMode.DEPTH_20.equals(mode)) {
+              smartStreamListener.onError(getErrorHolder(
+                new SmartAPIException("Invalid Exchange Type: Please check the exchange type and try again", "504")));
+            } else {
+              JSONObject wsMWJSONRequest = getApiRequest(SmartStreamAction.SUBS, mode, tokens);
+              ws.sendText(wsMWJSONRequest.toString());
+              tokensByModeMap.put(mode, set);
+            }
+          }
+        }
       } else {
         smartStreamListener.onError(getErrorHolder(new SmartAPIException("ticker is not connected", "504")));
       }
