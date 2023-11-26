@@ -2,6 +2,7 @@ package com.vriksh.broker.angelone.dto.ws;
 
 import java.math.BigDecimal;
 
+import com.angelbroking.smartapi.smartstream.models.Depth;
 import com.angelbroking.smartapi.smartstream.models.LTP;
 import com.angelbroking.smartapi.smartstream.models.Quote;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamError;
@@ -57,6 +58,16 @@ public class SmartStreamListenerImpl implements SmartStreamListener {
       .ltp(BigDecimal.valueOf(ltp.getLastTradedPrice()).divide(BigDecimal.valueOf(100)))
       .exchangeFeedTimeEpochMillis(ltp.getExchangeFeedTimeEpochMillis())
       .build();
+  }
+
+  @Override
+  public void onDepthArrival(Depth depth) {
+    
+  }
+
+  @Override
+  public SmartStreamError onErrorCustom() {
+    return null;
   }
 
 }

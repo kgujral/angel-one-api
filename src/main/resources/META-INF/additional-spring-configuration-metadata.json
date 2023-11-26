@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'api.key'"
+  },
+  {
+    "name": "client.code",
+    "type": "java.lang.String",
+    "description": "A description for 'client.code'"
+  },
+  {
+    "name": "mpin",
+    "type": "java.lang.String",
+    "description": "A description for 'mpin'"
+  },
+  {
+    "name": "totp.secret.key",
+    "type": "java.lang.String",
+    "description": "A description for 'totp.secret.key'"
+  }
+]}

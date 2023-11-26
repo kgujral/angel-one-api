@@ -21,7 +21,8 @@ public class AngelOneWSClient {
   public void subscribe(WSConfig config) {
     try {
       if (ticker == null) {
-        ticker = new SmartStreamTicker2(user.getClientCode(), user.getFeedToken(), new SmartStreamListenerImpl(listener));
+        ticker = new SmartStreamTicker2(user.getClientCode(), user.getFeedToken(),
+          new SmartStreamListenerImpl(listener));
         ticker.connect();
       }
       ticker.subscribe(config.getSubscriptionType(), config.getTokens());

@@ -35,6 +35,6 @@ public class InstrumentResponseDto {
   private String exchSeg;
 
   @JsonAlias("tick_size")
-  private BigDecimal tickSize;
+  private String tickSize;
 
 }

@@ -53,8 +53,8 @@ public class ApiUtilService {
   }
 
   private <T> T validateReponse(AngelOneApiResponseDto<T> response) {
-    log.info("{}", response);
     if (response.getSuccess() == Boolean.FALSE) {
+      log.error("{}", response);
       throw new RuntimeException(response.getErrorCode() + ": " + response.getMessage());
     }
     return response.getData();
