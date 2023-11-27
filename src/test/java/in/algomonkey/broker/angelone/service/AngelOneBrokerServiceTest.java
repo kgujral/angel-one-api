@@ -1,4 +1,4 @@
-package com.vriksh.broker.angelone.service;
+package in.algomonkey.broker.angelone.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
-import com.vriksh.broker.angelone.AngelOneApiApplicationTests;
-import com.vriksh.broker.angelone.mock.MockLtpListener;
 
+import in.algomonkey.broker.angelone.AngelOneApiApplicationTests;
 import in.algomonkey.broker.angelone.dto.auth.LoginResponseDto;
 import in.algomonkey.broker.angelone.dto.data.CandleDataDto;
 import in.algomonkey.broker.angelone.dto.data.CandleDataRequestDto;
@@ -39,7 +38,7 @@ import in.algomonkey.broker.angelone.dto.user.AngelOneUser;
 import in.algomonkey.broker.angelone.dto.user.RMSResponseDto;
 import in.algomonkey.broker.angelone.dto.user.UserProfileResponseDto;
 import in.algomonkey.broker.angelone.dto.ws.WSConfig;
-import in.algomonkey.broker.angelone.service.AngelOneBrokerService;
+import in.algomonkey.broker.angelone.mock.MockLtpListener;
 import in.algomonkey.broker.angelone.service.ws.AngelOneWSClient;
 
 public class AngelOneBrokerServiceTest extends AngelOneApiApplicationTests {

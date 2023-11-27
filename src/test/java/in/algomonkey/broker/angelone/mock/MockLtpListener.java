@@ -1,4 +1,4 @@
-package com.vriksh.broker.angelone.mock;
+package in.algomonkey.broker.angelone.mock;
 
 import in.algomonkey.broker.angelone.dto.ws.WSLtpDataDto;
 import in.algomonkey.broker.angelone.service.ws.AngelOneWSListener;

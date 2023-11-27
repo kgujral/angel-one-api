@@ -1,4 +1,4 @@
-package com.vriksh.broker.angelone;
+package in.algomonkey.broker.angelone;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
