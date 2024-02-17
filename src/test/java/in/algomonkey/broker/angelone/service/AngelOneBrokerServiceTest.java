@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import com.angelbroking.smartapi.smartstream.models.ExchangeType;
 import com.angelbroking.smartapi.smartstream.models.SmartStreamSubsMode;
 import com.angelbroking.smartapi.smartstream.models.TokenID;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 
 import in.algomonkey.broker.angelone.AngelOneApiApplicationTests;
 import in.algomonkey.broker.angelone.dto.auth.LoginResponseDto;
@@ -64,8 +65,24 @@ public class AngelOneBrokerServiceTest extends AngelOneApiApplicationTests {
   private String feedToken = "";
 
   @Autowired
+  private GoogleAuthenticator gAuth;
+  
+  @Autowired
   private AngelOneBrokerService angelOneBrokerService;
 
+  
+  @Test
+  public void shouldGenerateTotp() throws InterruptedException {
+    
+    System.out.println(tOtpSecretKey);
+    for(int i = 0; i < 100; i++) {
+      int pass = gAuth.getTotpPassword(tOtpSecretKey);
+      System.out.println(pass);
+      Thread.sleep(1000L);
+    }
+    
+  }
+  
   @Test
   public void shouldLogin() {
     LoginResponseDto loginResponseDto = login();

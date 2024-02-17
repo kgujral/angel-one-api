@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.util.CollectionUtils;
@@ -67,7 +68,7 @@ public class SmartStreamTicker2 {
    *                                  SmartStreamListener is null or empty
    */
   public SmartStreamTicker2(String clientId, String feedToken, SmartStreamListener smartStreamListener) {
-    if (Utils.isEmpty(clientId) || Utils.isEmpty(feedToken) || Utils.validateInputNullCheck(smartStreamListener)) {
+    if (StringUtils.isEmpty(clientId) || StringUtils.isEmpty(feedToken) || Utils.validateInputNullCheck(smartStreamListener)) {
       throw new IllegalArgumentException(
         "clientId, feedToken and SmartStreamListener should not be empty or null");
     }

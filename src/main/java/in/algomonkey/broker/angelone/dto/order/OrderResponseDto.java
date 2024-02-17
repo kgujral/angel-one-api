@@ -16,6 +16,9 @@ public class OrderResponseDto {
   @JsonAlias("orderid")
   private String orderId;
 
+  @JsonAlias("uniqueorderid")
+  private String uniqueOrderId;
+
   private String script;
 
 }
